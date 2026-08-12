@@ -137,7 +137,7 @@
   }
 
   function renderSwitcher(current) {
-    return Object.entries(PRODUCT_META).map(([key, meta]) => `<a class="switch-app ${key === current ? "current" : ""}" href="${appHref(key)}" title="${meta.label} — ${meta.description}">${meta.short}</a>`).join("");
+    return Object.entries(PRODUCT_META).map(([key, meta]) => `<a class="switch-app ${key === current ? "current" : ""}" href="${appHref(key)}" title="${meta.label} — ${meta.description}" aria-label="Buka Karyalo ${meta.label} — ${meta.description}"><span class="switch-short" aria-hidden="true">${meta.short}</span><span class="switch-name" aria-hidden="true">${meta.label}</span></a>`).join("");
   }
 
   function mount(options) {
@@ -174,7 +174,7 @@
           </header>
           <main class="page" id="page" tabindex="-1"></main>
         </div>
-        <button class="mobile-tour-fab" id="mobile-tour-fab">${icon("play")}<span>Tur singkat</span></button>
+        <button class="mobile-tour-fab" id="mobile-tour-fab" aria-label="Mulai tur singkat produk">${icon("play")}<span>Tur singkat</span></button>
       </div>`;
     document.getElementById("mobile-menu").addEventListener("click", () => setSidebar(!document.getElementById("sidebar").classList.contains("open")));
     document.getElementById("sidebar-scrim").addEventListener("click", () => setSidebar(false));
@@ -190,6 +190,7 @@
     document.addEventListener("keydown", event => {
       if (event.key !== "Escape") return;
       if (activeTour) stopTour();
+      else if (document.querySelector("#modal-root .modal")) closeModal();
       else setSidebar(false);
     });
   }
@@ -246,12 +247,13 @@
   }
   function modal(title, body, actions = "") {
     const root = document.getElementById("modal-root");
+    document.body.classList.add("modal-open");
     root.innerHTML = `<div class="modal-backdrop" role="presentation"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><header class="modal-head"><h2 id="modal-title">${escape(title)}</h2><button class="close-btn" data-close-modal aria-label="Tutup">${icon("close")}</button></header><div class="modal-body">${body}</div>${actions ? `<footer class="modal-actions">${actions}</footer>` : ""}</section></div>`;
     root.querySelectorAll("[data-close-modal]").forEach(button => button.addEventListener("click", closeModal));
     root.querySelector(".modal-backdrop").addEventListener("click", event => { if (event.target.classList.contains("modal-backdrop")) closeModal(); });
     root.querySelector("button, input, select")?.focus();
   }
-  function closeModal() { document.getElementById("modal-root").innerHTML = ""; }
+  function closeModal() { document.getElementById("modal-root").innerHTML = ""; document.body.classList.remove("modal-open"); }
   function showNotifications() {
     const data = getState().audit;
     modal("Aktivitas terbaru", `<div class="list">${data.map(item => `<div class="list-item"><span class="list-icon">${icon("check")}</span><div class="list-copy"><strong>${escape(item.action)}</strong><span>${escape(item.actor)} · ${escape(item.time)}</span></div></div>`).join("")}</div>`, `<button class="btn btn-secondary" data-close-modal>Tutup</button>`);
