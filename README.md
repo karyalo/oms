@@ -1,12 +1,12 @@
-# Karyalo Stock (OMS) — Demo
+# Karyalo Stock (OMS) — Alina Adaptation Demo
 
-Demo order management, inventory, stock opname, warehouse, transfer, retur, dan laporan operasional.
+Pecahan operasional dari repository `Karsa-Swakarya-Loka/Alina_warehouse`, ditambah konteks order/shipping dari Alina Ecommerce.
 
 ## Cakupan demo
 
-- Kanban order: perlu diproses → picking → packing → shipping.
-- Inventory per SKU dan adjustment dengan activity trail.
-- Stock opname, transfer lokasi, retur, dan laporan kecepatan proses.
+- Pipeline New Order → Processing → Picking → Packing → Ready To Ship → Shipped → Completed.
+- Stock In/Out, source/destination, quality, channel allocation, barcode, dan audit.
+- Stock opname, packing, Ship By, shipping/resi, dan laporan warehouse.
 - Cross-link ke Store/POS sebagai channel dan Finance sebagai pencatatan akhir.
 
 ## Jalankan
@@ -15,4 +15,4 @@ Demo order management, inventory, stock opname, warehouse, transfer, retur, dan 
 npm start
 ```
 
-Port default: `3103`. Semua data bersifat simulasi.
+Port default: `3103`. Lihat [`ALINA_ADAPTATION.md`](./ALINA_ADAPTATION.md). Semua data bersifat simulasi.

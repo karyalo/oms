@@ -51,44 +51,60 @@
     refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
   };
 
+  // Demo-safe projection of the two Alina repositories. It mirrors their data
+  // model and workflows without connecting to the production Convex/MySQL data.
   const seed = {
+    source: {
+      ecommerceCommit: "fff6ae0",
+      warehouseCommit: "66c577a",
+      warehouseSkuCount: 134,
+      note: "Data simulasi yang mengikuti struktur repositori Alina",
+    },
     products: [
-      { id: "AL-001", name: "Serene Linen Shirt", category: "Atasan", price: 329000, stock: 34, status: "Aktif", color: "#c7d5cf" },
-      { id: "AL-002", name: "Luma Pleated Dress", category: "Dress", price: 489000, stock: 18, status: "Aktif", color: "#b77b68" },
-      { id: "AL-003", name: "Aruna Knit Cardigan", category: "Outer", price: 379000, stock: 9, status: "Stok rendah", color: "#d8c7a5" },
-      { id: "AL-004", name: "Tala Wide Pants", category: "Bawahan", price: 349000, stock: 26, status: "Aktif", color: "#6d786f" },
-      { id: "AL-005", name: "Sora Everyday Blouse", category: "Atasan", price: 289000, stock: 42, status: "Aktif", color: "#e1d5c9" },
-      { id: "AL-006", name: "Mira Wrap Skirt", category: "Bawahan", price: 319000, stock: 13, status: "Aktif", color: "#8b5a4c" },
-      { id: "AL-007", name: "Raya Utility Jacket", category: "Outer", price: 559000, stock: 5, status: "Stok rendah", color: "#667c71" },
-      { id: "AL-008", name: "Nara Midi Dress", category: "Dress", price: 469000, stock: 0, status: "Habis", color: "#434943" },
+      { id:"ALN-DEW-REG-ALLSIZE-HIT", productId:"PROD-DEW-001", name:"Kemeja Alina Dewasa Reguler Allsize Hitam", category:"Dewasa", variant:"Reguler", color:"Hitam", size:"Allsize", cost:32500, price:85000, retailPrice:85000, marketerPrice:70000, resellerPrice:57500, agenPrice:50000, distributorPrice:42500, stock:48, minimumStock:12, status:"Active", image:"./assets/products/classic-shirt.webp", channels:{"E-Commerce":16,Shopee:8,TikTok:7,Tokopedia:7,WhatsApp:5,Offline:5} },
+      { id:"ALN-DEW-RIB-ALLSIZE-NAV", productId:"PROD-DEW-002", name:"Kemeja Alina Dewasa RIB Allsize Navy", category:"Dewasa", variant:"RIB", color:"Navy", size:"Allsize", cost:37500, price:90000, retailPrice:90000, marketerPrice:75000, resellerPrice:62500, agenPrice:55000, distributorPrice:47500, stock:35, minimumStock:12, status:"Active", image:"./assets/products/hoodie.webp", channels:{"E-Commerce":10,Shopee:6,TikTok:5,Tokopedia:5,WhatsApp:4,Offline:5} },
+      { id:"ALN-DEW-REG-JUMBO-MAR", productId:"PROD-DEW-003", name:"Kemeja Alina Dewasa Reguler Jumbo Maroon", category:"Dewasa", variant:"Reguler", color:"Maroon", size:"Jumbo", cost:37500, price:90000, retailPrice:90000, marketerPrice:75000, resellerPrice:62500, agenPrice:55000, distributorPrice:47500, stock:9, minimumStock:12, status:"Active", image:"./assets/products/jacket.webp", channels:{"E-Commerce":2,Shopee:2,TikTok:1,Tokopedia:1,WhatsApp:1,Offline:2} },
+      { id:"ALN-DEW-RIB-JUMBO-SAG", productId:"PROD-DEW-004", name:"Kemeja Alina Dewasa RIB Jumbo Sage", category:"Dewasa", variant:"RIB", color:"Sage", size:"Jumbo", cost:42500, price:95000, retailPrice:95000, marketerPrice:80000, resellerPrice:67500, agenPrice:60000, distributorPrice:52500, stock:24, minimumStock:12, status:"Active", image:"./assets/products/sweater.webp", channels:{"E-Commerce":7,Shopee:4,TikTok:3,Tokopedia:3,WhatsApp:3,Offline:4} },
+      { id:"ALN-DEW-REG-EXJ-PUT", productId:"PROD-DEW-005", name:"Kemeja Alina Dewasa Reguler Extra Jumbo Putih", category:"Dewasa", variant:"Reguler", color:"Putih", size:"Extra Jumbo", cost:42500, price:97500, retailPrice:97500, marketerPrice:82500, resellerPrice:67500, agenPrice:60000, distributorPrice:52500, stock:6, minimumStock:12, status:"Active", image:"./assets/products/suit.webp", channels:{"E-Commerce":1,Shopee:1,TikTok:1,Tokopedia:1,WhatsApp:1,Offline:1} },
+      { id:"ALN-KID-REG-K1-HIT", productId:"PROD-KID-001", name:"Kemeja Alina Kids Reguler Kids 1 Hitam", category:"Kids", variant:"Reguler", color:"Hitam", size:"Kids 1", cost:22500, price:65000, retailPrice:65000, marketerPrice:52500, resellerPrice:45000, agenPrice:38500, distributorPrice:32500, stock:42, minimumStock:10, status:"Active", image:"./assets/products/tee.webp", channels:{"E-Commerce":14,Shopee:7,TikTok:6,Tokopedia:5,WhatsApp:4,Offline:6} },
+      { id:"ALN-KID-RIB-K2-NAV", productId:"PROD-KID-002", name:"Kemeja Alina Kids RIB Kids 2 Navy", category:"Kids", variant:"RIB", color:"Navy", size:"Kids 2", cost:27500, price:75000, retailPrice:75000, marketerPrice:60000, resellerPrice:52500, agenPrice:45000, distributorPrice:37500, stock:18, minimumStock:10, status:"Active", image:"./assets/products/calm-pant.webp", channels:{"E-Commerce":6,Shopee:3,TikTok:2,Tokopedia:2,WhatsApp:2,Offline:3} },
+      { id:"ALN-KID-RIB-K3-SAG", productId:"PROD-KID-003", name:"Kemeja Alina Kids RIB Kids 3 Sage", category:"Kids", variant:"RIB", color:"Sage", size:"Kids 3", cost:31500, price:80000, retailPrice:80000, marketerPrice:65000, resellerPrice:55500, agenPrice:48000, distributorPrice:41500, stock:0, minimumStock:10, status:"Inactive", image:"./assets/products/modern-pant.webp", channels:{"E-Commerce":0,Shopee:0,TikTok:0,Tokopedia:0,WhatsApp:0,Offline:0} },
     ],
     orders: [
-      { id: "ORD-240812-1042", customer: "Nadia Putri", channel: "Store", total: 818000, items: 2, status: "Perlu diproses", date: "12 Agu, 09:42", courier: "JNE Reguler" },
-      { id: "ORD-240812-1038", customer: "Raka Pratama", channel: "Store", total: 349000, items: 1, status: "Picking", date: "12 Agu, 09:18", courier: "SiCepat" },
-      { id: "POS-240812-019", customer: "Guest", channel: "POS", total: 667000, items: 2, status: "Selesai", date: "12 Agu, 08:55", courier: "Ambil di toko" },
-      { id: "ORD-240811-1015", customer: "Sinta Maharani", channel: "Marketplace", total: 958000, items: 3, status: "Packing", date: "11 Agu, 17:24", courier: "J&T Express" },
-      { id: "ORD-240811-1009", customer: "Dewi Lestari", channel: "Store", total: 489000, items: 1, status: "Dikirim", date: "11 Agu, 14:10", courier: "AnterAja" },
-      { id: "POS-240811-018", customer: "Rian", channel: "POS", total: 319000, items: 1, status: "Selesai", date: "11 Agu, 13:42", courier: "Ambil di toko" },
+      { id:"ORD-20260608-0001", customer:"Rania Hijab Store", customerTier:"reseller", channel:"WhatsApp", total:460000, items:8, sku:"ALN-DEW-REG-ALLSIZE-HIT", status:"New Order", date:"8 Jun, 10:15", courier:"JNE Reg", shipBy:"10 Jun 2026" },
+      { id:"ORD-20260608-0002", customer:"Zahra Agen Busana", customerTier:"agen", channel:"Offline", total:825000, items:15, sku:"ALN-DEW-REG-JUMBO-MAR", status:"Processing", date:"8 Jun, 11:30", courier:"Ambil gudang", shipBy:"—" },
+      { id:"ORD-20260608-0003", customer:"Shopee Mall Order", customerTier:"ecer", channel:"Shopee", total:325000, items:5, sku:"ALN-KID-REG-K1-HIT", status:"Completed", date:"8 Jun, 12:00", courier:"Shopee Express", tracking:"SPX-9988112233" },
+      { id:"ORD-20260607-0004", customer:"Aisyah Marketer", customerTier:"marketer", channel:"TikTok", total:900000, items:12, sku:"ALN-DEW-RIB-ALLSIZE-NAV", status:"Shipped", date:"7 Jun, 19:00", courier:"JNE Reg", tracking:"JNE-88229911" },
+      { id:"ECOMM-20260627-0130", customer:"Nadia Putri", customerTier:"ecer", channel:"E-Commerce", total:198000, items:2, sku:"ALN-DEW-REG-EXJ-PUT", status:"Packing", date:"27 Jun, 16:31", courier:"SiCepat", shipBy:"28 Jun 2026" },
     ],
     transactions: [
-      { id: "TRX-1208-01", type: "Pemasukan", category: "Penjualan Store", amount: 818000, date: "12 Agu 2026", status: "Tercatat" },
-      { id: "TRX-1208-02", type: "Pemasukan", category: "Penjualan POS", amount: 667000, date: "12 Agu 2026", status: "Tercatat" },
-      { id: "TRX-1208-03", type: "Pengeluaran", category: "Iklan", amount: 350000, date: "12 Agu 2026", status: "Tercatat" },
-      { id: "TRX-1108-01", type: "Pemasukan", category: "Penjualan Marketplace", amount: 958000, date: "11 Agu 2026", status: "Tercatat" },
-      { id: "TRX-1108-02", type: "Pengeluaran", category: "Pengiriman", amount: 126000, date: "11 Agu 2026", status: "Tercatat" },
-      { id: "TRX-1008-01", type: "Pengeluaran", category: "Restock Produk", amount: 2850000, date: "10 Agu 2026", status: "Menunggu bukti" },
+      { id:"ORD-20260608-0001", type:"Pemasukan", category:"Penjualan Reseller", channel:"WhatsApp", payment:"Transfer Manual", amount:460000, items:8, fee:0, date:"8 Jun 2026", status:"Paid" },
+      { id:"ORD-20260608-0002", type:"Pemasukan", category:"Penjualan Agen", channel:"Offline", payment:"Tunai", amount:825000, items:15, fee:0, date:"8 Jun 2026", status:"Paid" },
+      { id:"ORD-20260608-0003", type:"Pemasukan", category:"Penjualan Retail", channel:"Shopee", payment:"Marketplace", amount:325000, items:5, fee:13000, date:"8 Jun 2026", status:"Paid" },
+      { id:"ORD-20260607-0004", type:"Pemasukan", category:"Penjualan Marketer", channel:"TikTok", payment:"Marketplace", amount:900000, items:12, fee:36000, date:"7 Jun 2026", status:"Paid" },
+      { id:"ECOMM-20260627-0130", type:"Pemasukan", category:"Penjualan Retail", channel:"E-Commerce", payment:"Transfer Manual", amount:198000, items:2, fee:0, date:"27 Jun 2026", status:"Pending" },
     ],
     customers: [
-      { name: "Nadia Putri", email: "nadia@example.com", orders: 5, spent: 2839000, segment: "Loyal" },
-      { name: "Sinta Maharani", email: "sinta@example.com", orders: 3, spent: 1756000, segment: "Returning" },
-      { name: "Dewi Lestari", email: "dewi@example.com", orders: 2, spent: 838000, segment: "Returning" },
-      { name: "Raka Pratama", email: "raka@example.com", orders: 1, spent: 349000, segment: "Baru" },
+      { id:"CUST-001", name:"Rania Hijab Store", email:"rania@gmail.com", phone:"081234567890", city:"Jakarta Selatan", orders:5, spent:2839000, segment:"Reseller" },
+      { id:"CUST-002", name:"Zahra Agen Busana", email:"zahra.agen@yahoo.com", phone:"082345678901", city:"Bandung", orders:3, spent:1756000, segment:"Agen" },
+      { id:"CUST-003", name:"Aisyah Marketer", email:"aisyah_market@gmail.com", phone:"083456789012", city:"Yogyakarta", orders:4, spent:2210000, segment:"Marketer" },
+      { id:"CUST-004", name:"Shopee Mall Order", email:"shopee@alina.com", phone:"08999999999", city:"Jakarta Barat", orders:12, spent:4938000, segment:"Shopee" },
     ],
-    cart: [],
+    stockIn: [
+      { id:"STK-IN-0001", date:"1 Jun 2026", sku:"ALN-DEW-REG-ALLSIZE-HIT", name:"Kemeja Alina Dewasa Reguler Allsize Hitam", qty:100, source:"Konveksi", quality:"Good", channel:"E-Commerce", notes:"Produksi Batch A" },
+      { id:"STK-IN-0002", date:"3 Jun 2026", sku:"ALN-KID-REG-K1-HIT", name:"Kemeja Alina Kids Reguler Kids 1 Hitam", qty:150, source:"Konveksi", quality:"Good", channel:"Shopee", notes:"Kiriman Konveksi" },
+    ],
+    stockOut: [
+      { id:"STK-OUT-0001", date:"4 Jun 2026", sku:"ALN-DEW-REG-ALLSIZE-HIT", name:"Kemeja Alina Dewasa Reguler Allsize Hitam", customer:"Rania Hijab Store", qty:10, destination:"Sales", quality:"Good", channel:"WhatsApp", notes:"Order Direct Reseller" },
+    ],
+    opname: [
+      { id:"OPN-0001", month:"Mei 2026", sku:"ALN-DEW-REG-ALLSIZE-HIT", name:"Kemeja Alina Dewasa Reguler Allsize Hitam", system:30, physical:30, difference:0, date:"31 Mei 2026", channel:"E-Commerce" },
+    ],
+    cart: [], posCart: [],
     audit: [
-      { action: "Stok AL-003 disesuaikan", actor: "Ayu", time: "8 menit lalu" },
-      { action: "Promo MIDMONTH diterbitkan", actor: "Dimas", time: "31 menit lalu" },
-      { action: "Order ORD-240812-1038 masuk picking", actor: "Sistem", time: "47 menit lalu" },
+      { action:"Stok ALN-DEW-REG-JUMBO-MAR di bawah minimum", actor:"Warehouse", time:"8 menit lalu" },
+      { action:"Order ECOMM-20260627-0130 masuk Packing", actor:"Sistem", time:"31 menit lalu" },
+      { action:"Harga tier Kemeja Alina tersinkron", actor:"Superadmin", time:"47 menit lalu" },
     ],
   };
 
@@ -96,7 +112,7 @@
     return `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.box}</svg>`;
   }
   function clone(value) { return JSON.parse(JSON.stringify(value)); }
-  function stateKey() { return "karyalo-demo-state-v3"; }
+  function stateKey() { return "karyalo-alina-demo-state-v4"; }
   function getState() {
     try {
       const parsed = JSON.parse(localStorage.getItem(stateKey()));
@@ -134,8 +150,8 @@
       <div class="app-shell">
         <aside class="sidebar" id="sidebar" aria-label="Menu aplikasi">
           <a class="brand" href="#" data-view="${options.active || "dashboard"}">
-            <span class="brand-mark">K</span>
-            <span class="brand-copy"><strong>Karyalo ${PRODUCT_META[options.app].label}</strong><span>${PRODUCT_META[options.app].description}</span></span>
+            <span class="brand-mark"><img src="./assets/alina-monogram.png" alt=""></span>
+            <span class="brand-copy"><strong>${escape(options.brand || `Karyalo ${PRODUCT_META[options.app].label}`)}</strong><span>${PRODUCT_META[options.app].description}</span></span>
           </a>
           <div class="demo-pill"><span class="demo-dot"></span> Mode demo interaktif</div>
           <nav class="side-nav" aria-label="Navigasi aplikasi">${groupedNav}</nav>
@@ -153,7 +169,7 @@
             <div class="top-actions">
               <button class="btn btn-secondary btn-sm" id="start-tour">${icon("play")} Tur singkat</button>
               <button class="icon-btn" id="notifications" aria-label="Notifikasi">${icon("bell")}<span class="notification-dot"></span></button>
-              <div class="profile"><span class="avatar">AS</span><span class="profile-copy"><strong>Ayu Sari</strong><span>Demo Owner</span></span></div>
+              <div class="profile"><span class="avatar">SA</span><span class="profile-copy"><strong>Superadmin Alina</strong><span>Mode demo</span></span></div>
             </div>
           </header>
           <main class="page" id="page" tabindex="-1"></main>
@@ -217,8 +233,8 @@
     return `<article class="card metric-card"><div class="metric-top"><span>${escape(label)}</span><span class="metric-icon ${tone}">${icon(iconName)}</span></div><div class="metric-value">${value}</div><span class="delta">${icon("arrow")} ${escape(detail)}</span></article>`;
   }
   function status(value) {
-    const danger = /Habis|Ditolak|Jatuh tempo/i.test(value);
-    const warning = /rendah|menunggu|Packing|Picking|Perlu/i.test(value);
+    const danger = /Habis|Inactive|Cancelled|Ditolak|Jatuh tempo|Reject/i.test(value);
+    const warning = /rendah|menunggu|Pending|Packing|Picking|Processing|New Order|Perlu/i.test(value);
     return `<span class="status ${danger ? "danger" : warning ? "warning" : ""}">${escape(value)}</span>`;
   }
   function toast(message) {
