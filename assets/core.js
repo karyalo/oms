@@ -3,6 +3,13 @@
 
   const PRODUCT_PORTS = { store: 3101, cms: 3102, oms: 3103, pos: 3104, finance: 3105 };
   const LOCAL_PORTS = { store: 4101, cms: 4102, oms: 4103, pos: 4104, finance: 4105 };
+  const PUBLIC_DEMO_URLS = {
+    store: "https://trusts-airports-shades-frames.trycloudflare.com/",
+    cms: "https://appointment-chester-strategic-air.trycloudflare.com/",
+    oms: "https://parcel-charged-civic-pound.trycloudflare.com/",
+    pos: "https://statement-asn-warm-viewed.trycloudflare.com/",
+    finance: "https://mighty-shaw-house-applicant.trycloudflare.com/",
+  };
   const PRODUCT_META = {
     store: { label: "Store", short: "ST", description: "Toko Online" },
     cms: { label: "Manage", short: "MG", description: "CMS / Kelola Toko" },
@@ -106,6 +113,7 @@
   function appHref(product) {
     const meta = PRODUCT_META[product];
     const host = location.hostname || "127.0.0.1";
+    if (host.endsWith(".trycloudflare.com")) return PUBLIC_DEMO_URLS[product];
     if (host.endsWith("karyalo.com") && !/^\d/.test(host)) return `https://${product === "cms" ? "cms" : product === "oms" ? "oms" : product}.karyalo.com/`;
     const current = Number(location.port);
     const ports = current >= 4101 && current <= 4105 ? LOCAL_PORTS : PRODUCT_PORTS;
