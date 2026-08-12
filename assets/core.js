@@ -132,7 +132,7 @@
     ).join("");
     document.getElementById("app").innerHTML = `
       <div class="app-shell">
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar" id="sidebar" aria-label="Menu aplikasi">
           <a class="brand" href="#" data-view="${options.active || "dashboard"}">
             <span class="brand-mark">K</span>
             <span class="brand-copy"><strong>Karyalo ${PRODUCT_META[options.app].label}</strong><span>${PRODUCT_META[options.app].description}</span></span>
@@ -145,9 +145,10 @@
             <div class="switch-grid">${renderSwitcher(options.app)}</div>
           </details>
         </aside>
+        <button class="sidebar-scrim" id="sidebar-scrim" aria-label="Tutup menu" hidden></button>
         <div class="main-wrap">
           <header class="topbar">
-            <button class="mobile-menu" id="mobile-menu" aria-label="Buka menu">${icon("menu")}</button>
+            <button class="mobile-menu" id="mobile-menu" aria-label="Buka menu" aria-controls="sidebar" aria-expanded="false">${icon("menu")}</button>
             <div class="top-title"><strong>${escape(options.title)}</strong><span>${escape(options.subtitle || "Alina Demo Company")}</span></div>
             <div class="top-actions">
               <button class="btn btn-secondary btn-sm" id="start-tour">${icon("play")} Tur singkat</button>
@@ -157,22 +158,58 @@
           </header>
           <main class="page" id="page" tabindex="-1"></main>
         </div>
+        <button class="mobile-tour-fab" id="mobile-tour-fab">${icon("play")}<span>Tur singkat</span></button>
       </div>`;
-    document.getElementById("mobile-menu").addEventListener("click", () => document.getElementById("sidebar").classList.toggle("open"));
+    document.getElementById("mobile-menu").addEventListener("click", () => setSidebar(!document.getElementById("sidebar").classList.contains("open")));
+    document.getElementById("sidebar-scrim").addEventListener("click", () => setSidebar(false));
     document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", event => {
       event.preventDefault();
       const view = button.dataset.view;
       options.onNavigate(view);
-      document.getElementById("sidebar").classList.remove("open");
+      setSidebar(false);
     }));
     document.getElementById("notifications").addEventListener("click", showNotifications);
     document.getElementById("start-tour").addEventListener("click", () => startTour(options.tour || []));
+    document.getElementById("mobile-tour-fab").addEventListener("click", () => startTour(options.tour || []));
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape") return;
+      if (activeTour) stopTour();
+      else setSidebar(false);
+    });
+  }
+
+  function setSidebar(open) {
+    const sidebar = document.getElementById("sidebar");
+    const trigger = document.getElementById("mobile-menu");
+    const scrim = document.getElementById("sidebar-scrim");
+    if (!sidebar || !trigger || !scrim) return;
+    sidebar.classList.toggle("open", open);
+    trigger.setAttribute("aria-expanded", String(open));
+    trigger.setAttribute("aria-label", open ? "Tutup menu" : "Buka menu");
+    scrim.hidden = !open;
+    document.body.classList.toggle("nav-open", open && matchMedia("(max-width: 900px)").matches);
+  }
+
+  function enhanceResponsiveTables(root) {
+    root.querySelectorAll("table").forEach(table => {
+      const labels = [...table.querySelectorAll("thead th")].map(cell => cell.textContent.trim());
+      table.querySelectorAll("tbody tr").forEach(row => {
+        [...row.children].forEach((cell, index) => {
+          if (!cell.dataset.label && labels[index]) cell.dataset.label = labels[index];
+        });
+      });
+    });
   }
 
   function setActiveNav(view) {
     document.querySelectorAll(".nav-item").forEach(item => item.classList.toggle("active", item.dataset.view === view));
   }
-  function page(html) { const target = document.getElementById("page"); target.innerHTML = html; target.focus({ preventScroll: true }); }
+  function page(html) {
+    const target = document.getElementById("page");
+    target.innerHTML = html;
+    enhanceResponsiveTables(target);
+    target.focus({ preventScroll: true });
+  }
   function heading(eyebrow, title, description, actions = "") {
     return `<div class="page-heading"><div><p class="eyebrow">${escape(eyebrow)}</p><h1>${escape(title)}</h1><p class="lede">${escape(description)}</p></div>${actions ? `<div class="heading-actions">${actions}</div>` : ""}</div>`;
   }
@@ -209,6 +246,7 @@
   function startTour(steps) {
     if (!steps.length) return toast("Tur untuk layar ini segera tersedia.");
     activeTour = { steps, index: 0 };
+    document.body.classList.add("tour-active");
     renderTour();
   }
   function renderTour() {
@@ -217,16 +255,29 @@
     if (!activeTour) return;
     const step = activeTour.steps[activeTour.index];
     const target = step.selector ? document.querySelector(step.selector) : null;
-    if (target) { target.classList.add("tour-highlight"); target.scrollIntoView({ behavior: "smooth", block: "center" }); }
+    const mobile = matchMedia("(max-width: 900px)").matches;
+    if (mobile) setSidebar(Boolean(target?.closest(".sidebar")));
+    if (target) {
+      target.classList.add("tour-highlight");
+      target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+    }
     const node = document.createElement("section");
     node.className = "tour-card";
+    node.setAttribute("role", "dialog");
+    node.setAttribute("aria-label", `Tur produk langkah ${activeTour.index + 1}`);
     node.innerHTML = `<p class="eyebrow">Tur produk · ${activeTour.index + 1}/${activeTour.steps.length}</p><div class="tour-progress">${activeTour.steps.map((_, i) => `<i class="${i <= activeTour.index ? "done" : ""}"></i>`).join("")}</div><h3>${escape(step.title)}</h3><p>${escape(step.text)}</p><div class="tour-actions"><button class="btn btn-secondary btn-sm" data-tour-back ${activeTour.index === 0 ? "disabled" : ""}>Kembali</button><button class="btn btn-primary btn-sm" data-tour-next>${activeTour.index === activeTour.steps.length - 1 ? "Selesai" : "Lanjut"}</button><button class="tour-close" data-tour-close>Tutup</button></div>`;
     document.body.appendChild(node);
     node.querySelector("[data-tour-back]").addEventListener("click", () => { activeTour.index--; renderTour(); });
     node.querySelector("[data-tour-next]").addEventListener("click", () => { if (activeTour.index === activeTour.steps.length - 1) stopTour(); else { activeTour.index++; renderTour(); } });
     node.querySelector("[data-tour-close]").addEventListener("click", stopTour);
   }
-  function stopTour() { clearHighlight(); document.querySelector(".tour-card")?.remove(); activeTour = null; }
+  function stopTour() {
+    clearHighlight();
+    document.querySelector(".tour-card")?.remove();
+    document.body.classList.remove("tour-active");
+    if (matchMedia("(max-width: 900px)").matches) setSidebar(false);
+    activeTour = null;
+  }
 
   function bars(values, labels, tone = "") {
     const max = Math.max(...values, 1);
