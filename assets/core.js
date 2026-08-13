@@ -49,6 +49,10 @@
     card: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',
     calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
     refresh: '<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
+    heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.7-7.5 1.1-1.1a5.5 5.5 0 0 0 0-7.8Z"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
+    trash: '<path d="M4 7h16M9 7V4h6v3m3 0-1 14H7L6 7m4 4v6m4-6v6"/>',
+    copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
   };
 
   // Demo-safe projection of the two Alina repositories. It mirrors their data
@@ -100,7 +104,35 @@
     opname: [
       { id:"OPN-0001", month:"Mei 2026", sku:"ALN-DEW-REG-ALLSIZE-HIT", name:"Kemeja Alina Dewasa Reguler Allsize Hitam", system:30, physical:30, difference:0, date:"31 Mei 2026", channel:"E-Commerce" },
     ],
-    cart: [], posCart: [],
+    cart: [], posCart: [], wishlist: ["ALN-DEW-RIB-ALLSIZE-NAV"],
+    profile: { name:"Nadia Putri", email:"nadia@example.com", phone:"081234567890", tier:"ecer", joined:"Juni 2026" },
+    session: { loggedIn:true, role:"customer" },
+    addresses: [
+      { id:"ADDR-001", label:"Rumah", recipient:"Nadia Putri", phone:"081234567890", address:"Jl. Pajajaran No. 10", area:"Bogor Tengah, Kota Bogor, Jawa Barat 16128", primary:true },
+      { id:"ADDR-002", label:"Kantor", recipient:"Nadia Putri", phone:"081234567890", address:"Jl. Sudirman Kav. 24", area:"Tanah Abang, Jakarta Pusat 10220", primary:false },
+    ],
+    vouchers: [
+      { code:"ALINABARU", type:"Persen", value:10, maxDiscount:25000, minSpend:100000, audience:"Publik", used:38, limit:100, status:"Aktif", expires:"31 Agu 2026", claimed:true },
+      { code:"RESELLER50", type:"Nominal", value:50000, maxDiscount:50000, minSpend:500000, audience:"Targeted", used:12, limit:50, status:"Aktif", expires:"15 Sep 2026", claimed:false },
+      { code:"FREESHIP", type:"Ongkir", value:20000, maxDiscount:20000, minSpend:150000, audience:"Publik", used:100, limit:100, status:"Selesai", expires:"30 Jun 2026", claimed:false },
+    ],
+    siteContent: { eyebrow:"ALINA · Kemeja untuk semua", headline:"Nyaman dipakai, mudah dipadukan.", description:"Koleksi Kemeja Alina untuk Dewasa dan Kids dalam varian Reguler serta RIB.", announcement:"Gratis ongkir hingga Rp20.000 untuk belanja pilihan.", whatsapp:"6281234567890", codEnabled:true, codMaxAmount:1000000, saleEnabled:true },
+    team: [
+      { id:"USR-001", name:"Superadmin Alina", email:"superadmin@alina.demo", role:"Superadmin", access:"Semua modul", status:"Aktif" },
+      { id:"USR-002", name:"Admin Katalog", email:"catalog@alina.demo", role:"Admin", access:"Produk, voucher, pelanggan", status:"Aktif" },
+      { id:"USR-003", name:"Staf Warehouse", email:"warehouse@alina.demo", role:"Staff", access:"Order, stock, shipping", status:"Aktif" },
+    ],
+    b2bApplications: [
+      { id:"B2B-001", name:"Toko Rania Hijab", contact:"Rania", phone:"081234567890", city:"Jakarta Selatan", requestedTier:"Reseller", status:"Menunggu", submitted:"8 Agu 2026" },
+      { id:"B2B-002", name:"Zahra Busana", contact:"Zahra", phone:"082345678901", city:"Bandung", requestedTier:"Agen", status:"Disetujui", submitted:"6 Agu 2026" },
+    ],
+    monitoring: [
+      { id:"SYNC-001", service:"Warehouse Catalog", status:"Sehat", detail:"134 SKU terbaca", time:"2 menit lalu" },
+      { id:"SYNC-002", service:"Payment Webhook", status:"Sehat", detail:"Respons 184 ms", time:"5 menit lalu" },
+      { id:"SYNC-003", service:"Shipping Quote", status:"Perlu perhatian", detail:"1 retry simulasi", time:"11 menit lalu" },
+    ],
+    settings: { requireShipBy:true, defaultStatus:"New Order", commissionPerItem:2000, theme:"Alina Plum", offlineMode:false },
+    updatedAt: 1,
     audit: [
       { action:"Stok ALN-DEW-REG-JUMBO-MAR di bawah minimum", actor:"Warehouse", time:"8 menit lalu" },
       { action:"Order ECOMM-20260627-0130 masuk Packing", actor:"Sistem", time:"31 menit lalu" },
@@ -112,19 +144,64 @@
     return `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.box}</svg>`;
   }
   function clone(value) { return JSON.parse(JSON.stringify(value)); }
-  function stateKey() { return "karyalo-alina-demo-state-v4"; }
+  function stateKey() { return "karyalo-alina-demo-state-v5"; }
+  function hydrate(value) {
+    const next = Object.assign(clone(seed), value || {});
+    ["products","orders","transactions","customers","stockIn","stockOut","opname","cart","posCart","audit","wishlist","addresses","vouchers","team","b2bApplications","monitoring"].forEach(key => {
+      if (!Array.isArray(next[key])) next[key] = clone(seed[key]);
+    });
+    ["source","profile","session","siteContent","settings"].forEach(key => {
+      next[key] = Object.assign({}, clone(seed[key]), value?.[key] || {});
+    });
+    return next;
+  }
+  function bridgeRead() {
+    try {
+      if (!window.name?.startsWith("karyalo-demo:")) return null;
+      return JSON.parse(window.name.slice("karyalo-demo:".length));
+    } catch { return null; }
+  }
   function getState() {
     try {
-      const parsed = JSON.parse(localStorage.getItem(stateKey()));
-      return parsed && parsed.products ? parsed : clone(seed);
-    } catch { return clone(seed); }
+      const parsed = JSON.parse(localStorage.getItem(stateKey()) || "null");
+      const bridged = bridgeRead();
+      const newest = (bridged?.updatedAt || 0) > (parsed?.updatedAt || 0) ? bridged : parsed;
+      const next = hydrate(newest);
+      if (bridged === newest && newest) localStorage.setItem(stateKey(), JSON.stringify(next));
+      return next;
+    } catch { return hydrate(null); }
   }
-  function saveState(state) { localStorage.setItem(stateKey(), JSON.stringify(state)); return state; }
+  function saveState(state) {
+    const next = hydrate(state);
+    next.updatedAt = Date.now();
+    localStorage.setItem(stateKey(), JSON.stringify(next));
+    try { window.name = `karyalo-demo:${JSON.stringify(next)}`; } catch {}
+    return next;
+  }
   function updateState(callback) { const state = getState(); callback(state); return saveState(state); }
-  function resetState() { localStorage.removeItem(stateKey()); toast("Data demo dikembalikan ke kondisi awal."); return getState(); }
+  function resetState() {
+    localStorage.removeItem(stateKey());
+    try { window.name = ""; } catch {}
+    const next = saveState(clone(seed));
+    toast("Data demo dikembalikan ke kondisi awal.");
+    return next;
+  }
   const money = value => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
   const number = value => new Intl.NumberFormat("id-ID").format(value);
   const escape = value => String(value ?? "").replace(/[&<>'"]/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" }[char]));
+  function downloadCsv(filename, headers, rows) {
+    const quote = value => `"${String(value ?? "").replace(/"/g, '""')}"`;
+    const csv = "\uFEFF" + [headers, ...rows].map(row => row.map(quote).join(",")).join("\r\n");
+    const url = URL.createObjectURL(new Blob([csv], { type:"text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url; link.download = filename; document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast(`${filename} berhasil diunduh.`);
+  }
+  function copyText(value, success = "Tersalin ke clipboard.") {
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(String(value)).then(() => toast(success)).catch(() => toast("Salin manual dari layar."));
+    else toast("Salin manual dari layar.");
+  }
 
   function appHref(product) {
     const meta = PRODUCT_META[product];
@@ -305,6 +382,6 @@
   window.KaryaloDemo = {
     PRODUCT_META, seed, icon, getState, saveState, updateState, resetState,
     money, number, escape, appHref, mount, setActiveNav, page, heading, metric,
-    status, toast, modal, closeModal, startTour, bars,
+    status, toast, modal, closeModal, startTour, bars, downloadCsv, copyText,
   };
 })();

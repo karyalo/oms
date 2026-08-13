@@ -8,6 +8,7 @@ Pecahan operasional dari repository `Karsa-Swakarya-Loka/Alina_warehouse`, ditam
 - Stock In/Out, source/destination, quality, channel allocation, barcode, dan audit.
 - Stock opname, packing, Ship By, shipping/resi, dan laporan warehouse.
 - Cross-link ke Store/POS sebagai channel dan Finance sebagai pencatatan akhir.
+- Opname dengan penyesuaian, alokasi channel editable, customer/user/settings, shipment/resi, retur, dan export CSV nyata.
 
 ## Jalankan
 
